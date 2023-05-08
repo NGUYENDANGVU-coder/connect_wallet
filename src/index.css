@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800&display=swap');
+*{
+  margin:0;
+  padding:0;
+}
+body{
+  font-family: 'Inter', sans-serif;
+}
+.ndv__img{
+  @apply object-cover object-center w-16 h-16
+}
+.ndv__wallet-item{
+  @apply flex items-center hover:bg-gray-300 p-3 rounded-md hover:duration-300 ease-linear cursor-pointer
+}
+.ndv__icon-profile{
+  @apply flex items-center justify-center w-12 h-12 bg-[#25aae1] rounded-full text-white cursor-pointer hover:bg-[#4481eb] duration-300 ease-linear
+}
+.ndv__button{
+    @apply  font-medium text-lg sm:text-base h-[58px] rounded-full bg-button_bg shadow-button_shadow focus:outline-none transition-all duration-300 ease-in-out bg-button_size hover:bg-button_hover
+}
