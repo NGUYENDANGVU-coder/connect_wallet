@@ -4,7 +4,8 @@ import Web3 from "web3";
 import { errors, ethers } from "ethers";
 import { getProvider } from '../Hooks/checkProvider';
 import Web3Modal from 'web3modal';
-import { BscConnector } from '@binance-chain/bsc-connector';
+import WalletConnectProvider from "@walletconnect/web3-provider";
+import { async } from 'q';
 export default function Login({ setIsConnected }) {
     const web3 = new Web3(new Web3.providers.HttpProvider("https://mainnet.infura.io/v3/9bab56a381cb440eb809f56e01c59de5"))
     async function activateInjectedProvider(providerName) {
@@ -66,26 +67,35 @@ export default function Login({ setIsConnected }) {
         if (window.BinanceChain) {
             const web3 = new Web3(window.BinanceChain);
             try {
-              const accounts = await web3.eth.getAccounts();
-              if (accounts.length > 0) {
-                const balance = await web3.eth.getBalance(accounts[0]);
-                localStorage.setItem('addressAccount', accounts[0])
-                
-                localStorage.setItem('balance', balance)
-                setIsConnected(true)
-                return true;
-              } else {
-                console.log('No account found');
-                return false;
-              }
+                const accounts = await web3.eth.getAccounts();
+                if (accounts.length > 0) {
+                    const balance = await web3.eth.getBalance(accounts[0]);
+                    localStorage.setItem('addressAccount', accounts[0])
+
+                    localStorage.setItem('balance', balance)
+                    setIsConnected(true)
+                    return true;
+                } else {
+                    console.log('No account found');
+                    return false;
+                }
             } catch (error) {
-              console.error(error);
-              return false;
+                console.error(error);
+                return false;
             }
-          } else {
+        } else {
             alert('Binance Wallet not found');
             return false;
-          }
+        }
+    }
+    const handleWalletConnect = async() => {
+        //  Create WalletConnect Provider
+        const provider = new WalletConnectProvider({
+            infuraId: "9bab56a381cb440eb809f56e01c59de5",
+        });
+        //  Enable session (triggers QR Code modal)
+        await provider.enable();
+        const web3 = new Web3(provider);
     }
     return (
         <div className='relative h-screen '>
@@ -102,7 +112,10 @@ export default function Login({ setIsConnected }) {
                     <img src={image.binance} alt='binance' className='ndv__img' />
                     <h3 className='ml-6 text-lg font-bold'>Binace</h3>
                 </div>
-
+                <div className='ndv__wallet-item' onClick={handleWalletConnect}>
+                    <img src={image.wallet} alt='wallet' className='ndv__img' />
+                    <h3 className='ml-6 text-lg font-bold'>WalletConnect</h3>
+                </div>
             </div>
         </div>
     )
